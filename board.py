@@ -10,21 +10,9 @@ The board uses a 1-dimensional representation with padding
 """
 
 import numpy as np
-from board_util import (
-    GoBoardUtil,
-    BLACK,
-    WHITE,
-    EMPTY,
-    BORDER,
-    PASS,
-    is_black_white,
-    is_black_white_empty,
-    coord_to_point,
-    where1d,
-    MAXSIZE,
-    GO_POINT
-)
-
+from board_util import (GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS,
+                        is_black_white, is_black_white_empty, coord_to_point,
+                        where1d, MAXSIZE, GO_POINT)
 """
 The GoBoard class implements a board and basic functions to play
 moves, check the end of the game, and count the acore at the end.
@@ -34,6 +22,8 @@ For many more utility functions, see the GoBoardUtil class in board_util.py.
 The board is stored as a one-dimensional array of GO_POINT in self.board.
 See GoBoardUtil.coord_to_point for explanations of the array encoding.
 """
+
+
 class GoBoard(object):
     def __init__(self, size):
         """
@@ -106,7 +96,7 @@ class GoBoard(object):
         """
         for row in range(1, self.size + 1):
             start = self.row_start(row)
-            board[start : start + self.size] = EMPTY
+            board[start:start + self.size] = EMPTY
 
     def is_eye(self, point, color):
         """
@@ -264,17 +254,29 @@ class GoBoard(object):
             board_moves.append(self.last_move)
         if self.last2_move != None and self.last2_move != PASS:
             board_moves.append(self.last2_move)
-            return 
+            return
 
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
     """ Here are the new user defined function for Assignment 1. """
 
     def gomoku_neighbors(self, point):
-        return _neighbors(self, point) + _diag_neighbors(self, point))
+        return (self._neighbors(point) + self._diag_neighbors(point))
 
     def gomoku_neighbors_of_color(self, point, color):
         """ List of neighbors of point of given color """
         nbc = []
-        for nb in self.gomoku_neighbors_of_color(point):
+        for nb in self.gomoku_neighbors(point):
             if self.get_color(nb) == color:
                 nbc.append(nb)
         return nbc
@@ -286,61 +288,122 @@ class GoBoard(object):
         y = point // self.NS
 
         x_counter = 0
-        
 
         for x_marker in range(x, self.size):
-            color_stone_line = self.get_color(x_marker + y * self.NS)
+            color_stone_line = self.get_color(self.pt(x_marker, y))
             if color_stone_line != color:
                 break
             x_counter += 1
         for x_marker in range(x, 0, -1):
-            color_stone_line = self.get_color(x_marker + y * self.NS)
+            color_stone_line = self.get_color(self.pt(x_marker, y))
             if color_stone_line != color:
                 break
             x_counter += 1
         if x_counter >= 5:
-            return found_straight_line = True
+            return True
         else:
             return found_straight_line
-        
-    
+
     def detect_straight_line_ver(self, point, color):
         found_straight_line = False
         x = point % self.NS
         y = point // self.NS
 
         y_counter = 0
-        
+
         for y_marker in range(y, self.size):
-            color_stone_line = self.get_color(x + y_marker * self.NS)
+            color_stone_line = self.get_color(self.pt(x, y_marker))
             if color_stone_line != color:
                 break
             y_counter += 1
         for y_marker in range(y, 0, -1):
-            color_stone_line = self.get_color(x + y_marker * self.NS)
+            color_stone_line = self.get_color(self.pt(x, y_marker))
             if color_stone_line != color:
                 break
             y_counter += 1
         if y_counter >= 5:
-            return found_straight_line = True
+            return True
         else:
             return found_straight_line
-    
-    def detect_straight_line_diag(self, point, color):
+
+    def detect_straight_line_right_diag(self, point, color):
         found_straight_line = False
         x = point % self.NS
         y = point // self.NS
 
         counter = 0
-        for x_marker, y_marker in (range(x, self.size), range(y))
+        for x_marker, y_marker in (range(x, self.size), range(y, self.size)):
+            color_stone_line = self.get_color(self.pt(x_marker, y_marker))
+            if color_stone_line != color:
+                break
+            counter += 1
 
+        for x_marker, y_marker in (range(x, 0, -1), range(y, 0, -1)):
+            color_stone_line = self.get_color(self.pt(x_marker, y_marker))
+            if color_stone_line != color:
+                break
+            counter += 1
+        if counter >= 5:
+            return True
+        else:
+            return False
 
-    def start_detection(self, point):
-        color = self.get_color(point)
-        neighbors_color = gomoku_neighbors_of_color(self, point, color)
-        if len(nbc) != 0:
+    def detect_straight_line_left_diag(self, point, color):
+        x = point % self.NS
+        y = point // self.NS
 
+        counter = 0
+        for x_marker, y_marker in (range(x, 0, -1), range(y, self.size)):
+            color_stone_line = self.get_color(self.pt(x_marker, y_marker))
+            if color_stone_line != color:
+                break
+            counter += 1
 
+        for x_marker, y_marker in (range(x, self.size), range(y, 0, -1)):
+            color_stone_line = self.get_color(self.pt(x_marker, y_marker))
+            if color_stone_line != color:
+                break
+            counter += 1
+
+        if counter >= 5:
+            return True
+        else:
+            return False
+
+    def working_on_detection(self, stone_list):
+
+        for point in stone_list:
+            color = self.get_color(point)
+            neighbors_color = self.gomoku_neighbors_of_color(point, color)
+            total_stone = (self.board == BLACK).sum() + (self.board
+                                                         == WHITE).sum()
+            if total_stone >= 5 and len(neighbors_color) != 0:
+                print('checka')
+                if self.detect_straight_line_hor(point, color) == True:
+                    return True
+                elif self.detect_straight_line_ver(point, color) == True:
+                    return True
+                elif self.detect_straight_line_left_diag(point, color) == True:
+                    return True
+                elif self.detect_straight_line_right_diag(point,
+                                                          color) == True:
+                    return True
+                else:
+                    return False
+
+    def trigger_detection(self):
+        black_stone_list = [point for point in where1d(self.board == BLACK)]
+        white_stone_list = [point for point in where1d(self.board == WHITE)]
+
+        if self.working_on_detection(black_stone_list) == True:
+            print('check1')
+            return BLACK
+        elif self.working_on_detection(white_stone_list) == True:
+            print('check2')
+            return WHITE
+
+        else:
+            return
 
     def gomoku_play_move(self, point, color):
         assert is_black_white(color)
@@ -358,21 +421,23 @@ class GoBoard(object):
         #in_enemy_eye = self._is_surrounded(point, opp_color)
         self.board[point] = color
         #single_captures = []
-        neighbors = self._neighbors(point)
-        for nb in neighbors:
-            if self.board[nb] == opp_color:
-                single_capture = self._detect_and_process_capture(nb)
-                if single_capture != None:
-                    single_captures.append(single_capture)
-        block = self._block_of(point)
-        #if not self._has_liberty(block):  
-            #self.board[point] = EMPTY
-            #return False
+        #neighbors = self._neighbors(point)
+        #for nb in neighbors:
+        #if self.board[nb] == color:
+        #five_stone_line = self.trigger_detection(point)
+        #if five_stone_line:
+        #pass
+
+        #if single_capture != None:
+        #single_captures.append(single_capture)
+        #block = self._block_of(point)
+        #if not self._has_liberty(block):
+        #self.board[point] = EMPTY
+        #return False
         #self.ko_recapture = None
         #if in_enemy_eye and len(single_captures) == 1:
-            #self.ko_recapture = single_captures[0]
+        #self.ko_recapture = single_captures[0]
         self.current_player = GoBoardUtil.opponent(color)
         self.last2_move = self.last_move
         self.last_move = point
         return True
-

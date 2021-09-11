@@ -112,7 +112,8 @@ class GtpConnection:
                 self.commands[command_name](args)
             except Exception as e:
                 self.debug_msg("Error executing command {}\n".format(str(e)))
-                self.debug_msg("Stack Trace:\n{}\n".format(traceback.format_exc()))
+                self.debug_msg("Stack Trace:\n{}\n".format(
+                    traceback.format_exc()))
                 raise e
         else:
             self.debug_msg("Unknown command: {}\n".format(command_name))
@@ -182,7 +183,6 @@ class GtpConnection:
         """
         self.reset(int(args[0]))
         self.respond()
-
         """
     ==========================================================================
     Assignment 1 - game-specific commands start here
@@ -196,8 +196,7 @@ class GtpConnection:
                      "pstring/Final Result/gogui-rules_final_result\n"
                      "pstring/Board Size/gogui-rules_board_size\n"
                      "pstring/Rules GameID/gogui-rules_game_id\n"
-                     "pstring/Show Board/gogui-rules_board\n"
-                     )
+                     "pstring/Show Board/gogui-rules_board\n")
 
     def gogui_rules_game_id_cmd(self, args):
         """ We already implemented this function for Assignment 1 """
@@ -221,7 +220,7 @@ class GtpConnection:
         """ We already implemented this function for Assignment 1 """
         size = self.board.size
         str = ''
-        for row in range(size-1, -1, -1):
+        for row in range(size - 1, -1, -1):
             start = self.board.row_start(row + 1)
             for i in range(size):
                 #str += '.'
@@ -236,10 +235,16 @@ class GtpConnection:
                     assert False
             str += '\n'
         self.respond(str)
-            
+
     def gogui_rules_final_result_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        self.respond("unknown")
+        result = self.board.trigger_detection()
+        if result == BLACK:
+            self.respond('BLACK')
+        elif result == WHITE:
+            self.respond('WHITE')
+        else:
+            self.respond('UNKNOW')
 
     def play_cmd(self, args):
         """ Modify this function for Assignment 1 """
@@ -252,7 +257,7 @@ class GtpConnection:
             color = color_to_int(board_color)
             ### Check the if the user wanna pass this turn.
             if args[1].lower() == "pass":
-                self.board.play_move(PASS, color)
+                self.board.gomoku_play_move(PASS, color)
                 self.board.current_player = GoBoardUtil.opponent(color)
                 self.respond()
                 return
@@ -261,18 +266,16 @@ class GtpConnection:
             if coord:
                 move = coord_to_point(coord[0], coord[1], self.board.size)
             else:
-                self.error(
-                    "Error executing move {} converted from {}".format(move, args[1])
-                )
+                self.error("Error executing move {} converted from {}".format(
+                    move, args[1]))
                 return
-            
-            if not self.board.play_move(move, color):
+
+            if not self.board.gomoku_play_move(move, color):
                 self.respond("Illegal Move: {}".format(board_move))
                 return
             else:
-                self.debug_msg(
-                    "Move: {}\nBoard:\n{}\n".format(board_move, self.board2d())
-                )
+                self.debug_msg("Move: {}\nBoard:\n{}\n".format(
+                    board_move, self.board2d()))
             self.respond()
         except Exception as e:
             self.respond("Error: {}".format(str(e)))
@@ -322,6 +325,7 @@ class GtpConnection:
 
     """ Assignment 1: ignore this command, implement 
         gogui_rules_legal_moves_cmd  above instead """
+
     def legal_moves_cmd(self, args):
         """
         List legal moves for color args[0] in {'b','w'}
