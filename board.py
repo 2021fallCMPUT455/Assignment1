@@ -332,13 +332,13 @@ class GoBoard(object):
         y = point // self.NS
 
         counter = 0
-        for x_marker, y_marker in (range(x, self.size), range(y, self.size)):
+        for x_marker, y_marker in zip(range(x, self.size), range(y, self.size)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
             counter += 1
 
-        for x_marker, y_marker in (range(x, 0, -1), range(y, 0, -1)):
+        for x_marker, y_marker in zip(range(x, 0, -1), range(y, 0, -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
@@ -353,13 +353,13 @@ class GoBoard(object):
         y = point // self.NS
 
         counter = 0
-        for x_marker, y_marker in (range(x, 0, -1), range(y, self.size)):
+        for x_marker, y_marker in zip(range(x, 0, -1), range(y, self.size)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
             counter += 1
 
-        for x_marker, y_marker in (range(x, self.size), range(y, 0, -1)):
+        for x_marker, y_marker in zip(range(x, self.size), range(y, 0, -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
@@ -378,7 +378,6 @@ class GoBoard(object):
             total_stone = (self.board == BLACK).sum() + (self.board
                                                          == WHITE).sum()
             if total_stone >= 5 and len(neighbors_color) != 0:
-                print('checka')
                 if self.detect_straight_line_hor(point, color) == True:
                     return True
                 elif self.detect_straight_line_ver(point, color) == True:
@@ -395,11 +394,9 @@ class GoBoard(object):
         black_stone_list = [point for point in where1d(self.board == BLACK)]
         white_stone_list = [point for point in where1d(self.board == WHITE)]
 
-        if self.working_on_detection(black_stone_list) == True:
-            print('check1')
+        if self.working_on_detection(black_stone_list) == True:          
             return BLACK
         elif self.working_on_detection(white_stone_list) == True:
-            print('check2')
             return WHITE
 
         else:
