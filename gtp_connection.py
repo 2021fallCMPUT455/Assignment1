@@ -208,7 +208,8 @@ class GtpConnection:
 
     def gogui_rules_legal_moves_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        self.respond()
+        legal_move = self.board.find_legal_move()
+        self.respond(str(legal_move))
         return
 
     def gogui_rules_side_to_move_cmd(self, args):

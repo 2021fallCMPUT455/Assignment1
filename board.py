@@ -332,7 +332,8 @@ class GoBoard(object):
         y = point // self.NS
 
         counter = 0
-        for x_marker, y_marker in zip(range(x, self.size), range(y, self.size)):
+        for x_marker, y_marker in zip(range(x, self.size), range(y,
+                                                                 self.size)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
@@ -387,14 +388,14 @@ class GoBoard(object):
                 elif self.detect_straight_line_right_diag(point,
                                                           color) == True:
                     return True
-                else:
-                    return False
+
+        return False
 
     def trigger_detection(self):
         black_stone_list = [point for point in where1d(self.board == BLACK)]
         white_stone_list = [point for point in where1d(self.board == WHITE)]
 
-        if self.working_on_detection(black_stone_list) == True:          
+        if self.working_on_detection(black_stone_list) == True:
             return BLACK
         elif self.working_on_detection(white_stone_list) == True:
             return WHITE
@@ -438,3 +439,22 @@ class GoBoard(object):
         self.last2_move = self.last_move
         self.last_move = point
         return True
+
+    def find_legal_move(self):
+        empty_point_list = np.argwhere(self.board == EMPTY)
+        legal_move = []
+        for empty_point in empty_point_list:
+            '''
+            valid_or_invalid = self.is_legal(
+                coord_to_point(empty_point[0], empty_point[1], self.size),
+                color)
+            if valid_or_invalid:
+            '''
+            x = empty_point[0] % self.NS
+            y = empty_point[0] // self.NS
+            new_coord = chr(x + 96) + str(y)
+            #print(new_coord)
+            legal_move.append(new_coord)
+        legal_move.sort(key=lambda x: x[0])
+        legal_move = ' '.join([move for move in legal_move])
+        return legal_move
