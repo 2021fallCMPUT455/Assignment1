@@ -12,7 +12,7 @@ The board uses a 1-dimensional representation with padding
 import numpy as np
 from board_util import (GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS,
                         is_black_white, is_black_white_empty, coord_to_point,
-                        where1d, MAXSIZE, GO_POINT)
+                        where1d, MAXSIZE, GO_POINT, DRAW)
 """
 The GoBoard class implements a board and basic functions to play
 moves, check the end of the game, and count the acore at the end.
@@ -390,15 +390,22 @@ class GoBoard(object):
                     return True
 
         return False
+    
+
 
     def trigger_detection(self):
         black_stone_list = [point for point in where1d(self.board == BLACK)]
         white_stone_list = [point for point in where1d(self.board == WHITE)]
+        empty_point_list = where1d(self.board == EMPTY)
+        two_pass_turn = (self.last_move == PASS and self.last2_move == PASS)
 
         if self.working_on_detection(black_stone_list) == True:
             return BLACK
         elif self.working_on_detection(white_stone_list) == True:
             return WHITE
+        
+        elif len(empty_point_list) == 0 or two_pass_turn:
+            return DRAW
 
         else:
             return
@@ -425,7 +432,7 @@ class GoBoard(object):
         #five_stone_line = self.trigger_detection(point)
         #if five_stone_line:
         #pass
-
+        
         #if single_capture != None:
         #single_captures.append(single_capture)
         #block = self._block_of(point)

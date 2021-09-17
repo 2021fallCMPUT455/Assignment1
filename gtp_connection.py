@@ -17,6 +17,7 @@ from board_util import (
     PASS,
     MAXSIZE,
     coord_to_point,
+    DRAW
 )
 import numpy as np
 import re
@@ -244,6 +245,8 @@ class GtpConnection:
             self.respond('BLACK')
         elif result == WHITE:
             self.respond('WHITE')
+        elif result == DRAW:
+            self.respond('DRAW')
         else:
             self.respond('UNKNOW')
 
