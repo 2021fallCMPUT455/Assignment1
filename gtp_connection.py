@@ -287,16 +287,11 @@ class GtpConnection:
     def genmove_cmd(self, args):
         """ Modify this function for Assignment 1 """
         """ generate a move for color args[0] in {'b','w'} """
-
-        # Todo 
-        #       if board full and draw response pass
-        #       @@@@if 5 in a row response resign
-
         # first argument into board_color ex. w
         board_color = args[0].lower()
         # convert char into correct integer code ex. WHITE
         color = color_to_int(board_color)
-
+        # Check if draw response pass and if 5 in a row then response for op. is resign
         result = self.board.trigger_detection()
         if (result == BLACK) and (color == WHITE):
             self.respond('resign')
