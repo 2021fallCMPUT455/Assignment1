@@ -1,5 +1,5 @@
 # Assignment1
 
-jionghao
-cyao1
+jionghao \n
+cyao1 \n
 Bryce - bknguyen
