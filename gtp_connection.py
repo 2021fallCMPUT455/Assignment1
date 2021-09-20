@@ -355,7 +355,7 @@ class GtpConnection:
             move_coord = point_to_coord(move, self.board.size)
             move_as_string = format_point(move_coord)
             if self.board.is_legal(move, color):
-                self.board.play_move(move, color)
+                self.board.gomoku_play_move(move, color)
                 self.respond(move_as_string)
             else:
                 self.respond("Illegal move: {}".format(move_as_string))
