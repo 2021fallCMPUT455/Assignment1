@@ -7,6 +7,7 @@ in the Deep-Go project by Isaac Henrion and Amos Storkey
 at the University of Edinburgh.
 """
 import traceback
+
 from sys import stdin, stdout, stderr
 from board_util import (
     GoBoardUtil,
@@ -19,9 +20,10 @@ from board_util import (
     coord_to_point,
     DRAW,
 )
+
 import numpy as np
 import re
-
+#from board import Goboard
 
 class GtpConnection:
     def __init__(self, go_engine, board, debug_mode=False):
@@ -255,10 +257,13 @@ class GtpConnection:
         """
         play a move args[1] for given color args[0] in {'b','w'}
         """
+       # print(self.board.current_player)
+        # print(board_color)
         try:
             board_color = args[0].lower()
             board_move = args[1]
             color = color_to_int(board_color)
+            # self.board.current_player = color
             ### Check the if the user wanna pass this turn.
             if args[1].lower() == "pass":
                 self.board.gomoku_play_move(PASS, color)
@@ -266,6 +271,48 @@ class GtpConnection:
                 self.respond()
                 return
             coord = move_to_coord(args[1], self.board.size)
+            # black_list = []
+            # white_list = []
+            # # print(color)
+            # # print(args[0])
+            # if args[0] == 'b':
+            #     # print('yes')
+            #     black_list.append('b')
+            #     # print(black_list)
+            # if args[0] == 'w':
+            #     # print('no')
+            #     white_list.append('w')
+            # # print(black_list)
+            # # print(white_list)
+            #
+            #lastmove_list = []
+           # print(self.board.last_board_moves)
+            #lastmove_list = self.board.last_board_moves()
+           # print(lastmove_list)
+           # print(self.board.last_move)
+           #  if self.board.last_move != None and self.board.last_move != PASS:
+           #      #print('1')
+           # print(self.board.current_player)
+            if self.board.current_player != color:
+                print("illegal move: wrong colour ")
+                return
+            # elif self.board.current_player() == 2 and args[0] == 2:
+            #     print("illegal move: wrong colour ")
+            #     return
+            # elif self.board.last_move == PASS:
+            #
+            #print(coord)
+            #print(1)
+           #  if args[0] == 'b' and lastmove_list[1] == 'b':
+           #      print("illegal move: wrong colour ")
+           #      return
+           # # if coord[0] == b and args[0]
+           #  elif args[0] == 'w' and lastmove_list[1] == 'w':
+           #      print("illegal move: wrong colour ")
+           #      return
+
+
+
             ### Check if the user has enter a coordinate.
             if coord:
                 move = coord_to_point(coord[0], coord[1], self.board.size)
