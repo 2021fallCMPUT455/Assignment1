@@ -16,6 +16,7 @@ The board uses a 1-dimensional representation with padding
 """
 
 import numpy as np
+import sys
 from board_util import (GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS,
                         is_black_white, is_black_white_empty, coord_to_point,
                         where1d, MAXSIZE, GO_POINT, DRAW)
@@ -336,9 +337,11 @@ class GoBoard(object):
             return found_straight_line
 
     def detect_straight_line_right_diag(self, point, color):
-        found_straight_line = False
+        #found_straight_line = False
         x = point % self.NS
         y = point // self.NS
+
+        coord_list = []
 
         counter = 0
         for x_marker, y_marker in zip(range(x, self.size), range(y,
@@ -347,12 +350,16 @@ class GoBoard(object):
             if color_stone_line != color:
                 break
             counter += 1
+            coord_list.append((x_marker, y_marker))
 
-        for x_marker, y_marker in zip(range(x, 0, -1), range(y, 0, -1)):
+        for x_marker, y_marker in zip(range(x - 1, 0, -1), range(y - 1, 0,
+                                                                 -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
             counter += 1
+            coord_list.append((x_marker, y_marker))
+
         if counter >= 5:
             return True
         else:
@@ -369,7 +376,8 @@ class GoBoard(object):
                 break
             counter += 1
 
-        for x_marker, y_marker in zip(range(x, self.size), range(y, 0, -1)):
+        for x_marker, y_marker in zip(range(x + 1, self.size),
+                                      range(y - 1, 0, -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
@@ -389,17 +397,17 @@ class GoBoard(object):
                                                          == WHITE).sum()
             if total_stone >= 5 and len(neighbors_color) != 0:
                 if self.detect_straight_line_hor(point, color) == True:
-                    sys.stdout.write('hor')
+
                     return True
                 elif self.detect_straight_line_ver(point, color) == True:
-                    sys.stdout.write('ver')
+
                     return True
                 elif self.detect_straight_line_left_diag(point, color) == True:
-                    sys.stdout.write('left')
+
                     return True
                 elif self.detect_straight_line_right_diag(point,
                                                           color) == True:
-                    sys.stdout.write('right')
+
                     return True
 
         return False
