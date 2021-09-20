@@ -1,11 +1,17 @@
 """
 board.py
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32d907e7a2129093396a03d9ecbf25c44a1ee1b6
 Implements a basic Go board with functions to:
 - initialize to a given board size
 - check if a move is legal
 - play a move
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32d907e7a2129093396a03d9ecbf25c44a1ee1b6
 The board uses a 1-dimensional representation with padding
 """
 
@@ -18,7 +24,10 @@ The GoBoard class implements a board and basic functions to play
 moves, check the end of the game, and count the acore at the end.
 The class also contains basic utility functions for writing a Go player.
 For many more utility functions, see the GoBoardUtil class in board_util.py.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32d907e7a2129093396a03d9ecbf25c44a1ee1b6
 The board is stored as a one-dimensional array of GO_POINT in self.board.
 See GoBoardUtil.coord_to_point for explanations of the array encoding.
 """
@@ -390,8 +399,6 @@ class GoBoard(object):
                     return True
 
         return False
-    
-
 
     def trigger_detection(self):
         black_stone_list = [point for point in where1d(self.board == BLACK)]
@@ -403,7 +410,7 @@ class GoBoard(object):
             return BLACK
         elif self.working_on_detection(white_stone_list) == True:
             return WHITE
-        
+
         elif len(empty_point_list) == 0 or two_pass_turn:
             return DRAW
 
@@ -432,7 +439,7 @@ class GoBoard(object):
         #five_stone_line = self.trigger_detection(point)
         #if five_stone_line:
         #pass
-        
+
         #if single_capture != None:
         #single_captures.append(single_capture)
         #block = self._block_of(point)

@@ -5,7 +5,6 @@ Utility functions for Go board.
 
 import numpy as np
 import random
-
 """
 Encoding of colors on and off a Go board.
 FLODDFILL is used internally for a temporary marker
@@ -30,24 +29,20 @@ A GO_POINT is a point on a Go board.
 It is encoded as a 32-bit integer, using the numpy type.
 """
 GO_POINT = np.int32
-
 """
 Encoding of special pass move
 """
 PASS = -10
-
 """
 Encoding of "not a real point", used as a marker
 """
 NULLPOINT = 0
-
 """
 The largest board we allow. 
 To support larger boards the coordinate printing in
 GtpConnection.format_point needs to be changed.
 """
 MAXSIZE = 25
-
 """
 where1d: Helper function for using np.where with 1-d arrays.
 The result of np.where is a tuple which contains the indices 
@@ -55,6 +50,8 @@ of elements that fulfill the condition.
 For 1-d arrays, this is a singleton tuple.
 The [0] indexing is needed to extract the result from the singleton tuple.
 """
+
+
 def where1d(condition):
     return np.where(condition)[0]
 
@@ -67,6 +64,9 @@ def coord_to_point(row, col, boardsize):
     ---------
     row, col: int
              coordinates of the point  1 <= row, col <= size
+<<<<<<< HEAD
+
+=======
 
     Returns
     -------
@@ -83,9 +83,7 @@ def coord_to_point(row, col, boardsize):
     12   13 14 15
     08   09 10 11
     04   05 06 07
-
     00   01 02 03
-
     File board_util.py defines the mapping of colors to integers,
     such as EMPTY = 0, BORDER = 3.
     For example, the empty 3x3 board is encoded like this:
@@ -113,7 +111,10 @@ class GoBoardUtil(object):
         """
         generate a list of all legal moves on the board.
         Does not include the Pass move.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32d907e7a2129093396a03d9ecbf25c44a1ee1b6
         Arguments
         ---------
         board : np.array
@@ -133,7 +134,10 @@ class GoBoardUtil(object):
         """
         Generate a random move.
         Return PASS if no move found
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32d907e7a2129093396a03d9ecbf25c44a1ee1b6
         Arguments
         ---------
         board : np.array
@@ -144,9 +148,9 @@ class GoBoardUtil(object):
         moves = board.get_empty_points()
         np.random.shuffle(moves)
         for move in moves:
-            legal = not (
-                use_eye_filter and board.is_eye(move, color)
-            ) and board.is_legal(move, color)
+            legal = not (use_eye_filter
+                         and board.is_eye(move, color)) and board.is_legal(
+                             move, color)
             if legal:
                 return move
         return PASS
@@ -160,9 +164,9 @@ class GoBoardUtil(object):
         color = board.current_player
         moves = []
         for move in empty_points:
-            legal = not (
-                use_eye_filter and board.is_eye(move, color)
-            ) and board.is_legal(move, color)
+            legal = not (use_eye_filter
+                         and board.is_eye(move, color)) and board.is_legal(
+                             move, color)
             if legal:
                 moves.append(move)
         return moves
@@ -183,5 +187,6 @@ class GoBoardUtil(object):
         board2d = np.zeros((size, size), dtype=GO_POINT)
         for row in range(size):
             start = goboard.row_start(row + 1)
-            board2d[row, :] = goboard.board[start : start + size]
+            board2d[row, :] = goboard.board[start:start + size]
+
         return board2d

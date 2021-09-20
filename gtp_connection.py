@@ -17,7 +17,7 @@ from board_util import (
     PASS,
     MAXSIZE,
     coord_to_point,
-    DRAW
+    DRAW,
 )
 import numpy as np
 import re
@@ -270,6 +270,7 @@ class GtpConnection:
             if coord:
                 move = coord_to_point(coord[0], coord[1], self.board.size)
             else:
+
                 self.error("Error executing move {} converted from {}".format(
                     move, args[1]))
                 return
@@ -278,8 +279,10 @@ class GtpConnection:
                 self.respond("Illegal Move: {}".format(board_move))
                 return
             else:
+
                 self.debug_msg("Move: {}\nBoard:\n{}\n".format(
                     board_move, self.board2d()))
+
             self.respond()
         except Exception as e:
             self.respond("Error: {}".format(str(e)))
@@ -287,16 +290,28 @@ class GtpConnection:
     def genmove_cmd(self, args):
         """ Modify this function for Assignment 1 """
         """ generate a move for color args[0] in {'b','w'} """
+
+        # first argument into board_color ex. w
         board_color = args[0].lower()
+        # convert char into correct integer code ex. WHITE
         color = color_to_int(board_color)
-        move = self.go_engine.get_move(self.board, color)
-        move_coord = point_to_coord(move, self.board.size)
-        move_as_string = format_point(move_coord)
-        if self.board.is_legal(move, color):
-            self.board.play_move(move, color)
-            self.respond(move_as_string)
+        # Check if draw response pass and if 5 in a row then response for op. is resign
+        result = self.board.trigger_detection()
+        if (result == BLACK) and (color == WHITE):
+            self.respond('resign')
+        elif (result == WHITE) and (color == BLACK):
+            self.respond('resign')
+        elif result == DRAW:
+            self.respond('pass')
         else:
-            self.respond("Illegal move: {}".format(move_as_string))
+            move = self.go_engine.get_move(self.board, color)
+            move_coord = point_to_coord(move, self.board.size)
+            move_as_string = format_point(move_coord)
+            if self.board.is_legal(move, color):
+                self.board.play_move(move, color)
+                self.respond(move_as_string)
+            else:
+                self.respond("Illegal move: {}".format(move_as_string))
 
     """
     ==========================================================================
