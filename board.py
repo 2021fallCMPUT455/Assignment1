@@ -389,13 +389,17 @@ class GoBoard(object):
                                                          == WHITE).sum()
             if total_stone >= 5 and len(neighbors_color) != 0:
                 if self.detect_straight_line_hor(point, color) == True:
+                    sys.stdout.write('hor')
                     return True
                 elif self.detect_straight_line_ver(point, color) == True:
+                    sys.stdout.write('ver')
                     return True
                 elif self.detect_straight_line_left_diag(point, color) == True:
+                    sys.stdout.write('left')
                     return True
                 elif self.detect_straight_line_right_diag(point,
                                                           color) == True:
+                    sys.stdout.write('right')
                     return True
 
         return False
