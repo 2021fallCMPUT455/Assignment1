@@ -291,64 +291,72 @@ class GoBoard(object):
                 nbc.append(nb)
         return nbc
 
-    def detect_straight_line_hor(self, point, color):
+    def detect_straight_line_ver(self, point, color):
         """ Detect the straight line in four directions. """
         found_straight_line = False
-        x = point % self.NS
-        y = point // self.NS
+        y = point % self.NS
+        x = point // self.NS
 
         x_counter = 0
 
-        for x_marker in range(x, self.size):
+        for x_marker in range(x, self.NS):
             color_stone_line = self.get_color(self.pt(x_marker, y))
             if color_stone_line != color:
                 break
             x_counter += 1
-        for x_marker in range(x, 0, -1):
+        for x_marker in range(x - 1, 0, -1):
             color_stone_line = self.get_color(self.pt(x_marker, y))
             if color_stone_line != color:
                 break
             x_counter += 1
         if x_counter >= 5:
+            #print('hor')
+            print(str(color))
             return True
         else:
             return found_straight_line
 
-    def detect_straight_line_ver(self, point, color):
+    def detect_straight_line_hor(self, point, color):
         found_straight_line = False
-        x = point % self.NS
-        y = point // self.NS
+        y = point % self.NS
+        x = point // self.NS
 
         y_counter = 0
 
-        for y_marker in range(y, self.size):
+        for y_marker in range(y, self.NS):
             color_stone_line = self.get_color(self.pt(x, y_marker))
             if color_stone_line != color:
                 break
             y_counter += 1
-        for y_marker in range(y, 0, -1):
+        for y_marker in range(y - 1, 0, -1):
             color_stone_line = self.get_color(self.pt(x, y_marker))
             if color_stone_line != color:
                 break
             y_counter += 1
         if y_counter >= 5:
+            #print('ver')
             return True
         else:
             return found_straight_line
 
-    def detect_straight_line_right_diag(self, point, color):
+    def detect_straight_line_left_diag(self, point, color):
+        #print(f'\n check 00: {self.board(self.size + 1, self.size + 1)} \n')
         #found_straight_line = False
-        x = point % self.NS
-        y = point // self.NS
+        y = point % self.NS
+        x = point // self.NS
 
         coord_list = []
 
         counter = 0
-        for x_marker, y_marker in zip(range(x, self.size), range(y,
-                                                                 self.size)):
+
+        #print('start')
+        #print(f'begin: {(x, y), self.get_color(self.pt(x, y))}')
+        for x_marker, y_marker in zip(range(x, self.NS), range(y, self.NS)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
+                #print(f'not black: {(x_marker, y_marker)}')
                 break
+            #print((x_marker, y_marker))
             counter += 1
             coord_list.append((x_marker, y_marker))
 
@@ -356,27 +364,30 @@ class GoBoard(object):
                                                                  -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
+                #print(f'not black: {(x_marker, y_marker)}')
                 break
+            #print((x_marker, y_marker))
             counter += 1
             coord_list.append((x_marker, y_marker))
-
+        #print('end')
         if counter >= 5:
+            #print('right')
             return True
         else:
             return False
 
-    def detect_straight_line_left_diag(self, point, color):
-        x = point % self.NS
-        y = point // self.NS
+    def detect_straight_line_right_diag(self, point, color):
+        y = point % self.NS
+        x = point // self.NS
 
         counter = 0
-        for x_marker, y_marker in zip(range(x, 0, -1), range(y, self.size)):
+        for x_marker, y_marker in zip(range(x, 0, -1), range(y, self.NS)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
                 break
             counter += 1
 
-        for x_marker, y_marker in zip(range(x + 1, self.size),
+        for x_marker, y_marker in zip(range(x + 1, self.NS),
                                       range(y - 1, 0, -1)):
             color_stone_line = self.get_color(self.pt(x_marker, y_marker))
             if color_stone_line != color:
@@ -384,6 +395,7 @@ class GoBoard(object):
             counter += 1
 
         if counter >= 5:
+            #print('left')
             return True
         else:
             return False
@@ -418,9 +430,13 @@ class GoBoard(object):
         empty_point_list = where1d(self.board == EMPTY)
         two_pass_turn = (self.last_move == PASS and self.last2_move == PASS)
 
+        print(black_stone_list)
+
         if self.working_on_detection(black_stone_list) == True:
+            #print('bb')
             return BLACK
         elif self.working_on_detection(white_stone_list) == True:
+            #print('ww')
             return WHITE
 
         elif len(empty_point_list) == 0 or two_pass_turn:
@@ -433,7 +449,7 @@ class GoBoard(object):
         assert is_black_white(color)
         # Special cases
         if point == PASS:
-            self.ko_recapture = None
+            #self.ko_recapture = None
             self.current_player = GoBoardUtil.opponent(color)
             self.last2_move = self.last_move
             self.last_move = point
